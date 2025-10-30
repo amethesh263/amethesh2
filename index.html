@@ -1,72 +1,156 @@
-<html>
-  <head>
-    <title>IT summer work try </title>
- 
-    <style>div {
-position:relative;
-}
-#nav {
-position:absolute;
-left:50%;top:0;
-margin-left:-375px; /* negative margin equal to half the width */
-width:750px;
-list-style:none;
-}
-#nav li {
-float:left;
-}
-#nav a {
-display:block;
-text-align:center;
-width:150px; /* fixed width */
-text-decoration:none; 
-}
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parent–Child Account System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      max-width: 400px;
+      margin: 20px auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    h2 { text-align: center; }
+    .section { margin-top: 30px; }
+  </style>
+</head>
+<body>
 
-li {
-  float: left;
-}
+  <div class="container">
+    <h2>Sign Up</h2>
+    <select id="role">
+      <option value="parent">Parent</option>
+      <option value="child">Child</option>
+    </select>
+    <input type="text" id="signupUsername" placeholder="Username" />
+    <input type="password" id="signupPassword" placeholder="Password" />
+    <button onclick="signUp()">Sign Up</button>
+  </div>
 
-li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
+  <div class="container">
+    <h2>Login</h2>
+    <input type="text" id="loginUsername" placeholder="Username" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button onclick="login()">Login</button>
+  </div>
 
-a:hover:not(.active) {
-  background-color: #111;
-}
+  <div class="container section" id="linkSection" style="display: none;">
+    <h2>Link Child Account</h2>
+    <p>Logged in as: <b id="currentParent"></b></p>
+    <input type="text" id="childToLink" placeholder="Child's username" />
+    <button onclick="linkChild()">Link Child</button>
 
-.active {
-  background-color:#04AA6D;
-}
-</style>
-  <body>
+    <h3>Linked Children:</h3>
+    <ul id="linkedChildren"></ul>
+  </div>
 
-    <ul id="nav">
-  <li><a class="active" href="#home">Home</a></li>
-  <li><a href= "https://th.bing.com/th/id/R.086d1ba1fa6fdbee09a57aa98ff04de4?rik=CbXC%2b35u5RzVRA&riu=http%3a%2f%2feditorial.jpress.co.uk%2fweb%2fsponsor%2flogo%2fcollyers.jpg&ehk=nqBWulmCH%2b1J9vcjBuNaIKXbGsqX9dJnnB44abYV1gs%3d&risl=&pid=ImgRaw&r=0""#news">News</a></li>
-  <li><a href= "https://www.youtube.com/""#contact">Contact</a></li>
-  <li><a href= "https://github.com/amethesh263/amethesh2/settings/pages""#about">About</a></li>
-</ul>
-  </head>
-  </body>
-  <body>
-    <h1>  IT summer work </h1>
-    <h2> different type of texts</h2>
-    <h3> 1 2 3  4 5 6 7 8 9 0 </h3>
-    <a href="https://collyer82.sharepoint.com/sites/StepUptoCollyer's/Summer%20Work/Forms/AllItems.aspx?viewid=138a040b%2D9ac6%2D4e7d%2D8d9c%2D6a39a5776ade&as=json&FolderCTID=0x012000D496B6B24B8D8F46944B57FA6059A675&id=%2Fsites%2FStepUptoCollyer%27s%2FSummer%20Work%2FBusiness%2FIT%20BTEC%20L3%2FIT%20BTEC%20L3%20%2D%20summer%20work%2Epdf&parent=%2Fsites%2FStepUptoCollyer%27s%2FSummer%20Work%2FBusiness%2FIT%20BTEC%20L3">
-    <img src="https://tse3.mm.bing.net/th/id/OIP.hJNba13QDuuuvXIbejSbsgHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"width=160 height=120  >
-    </a>
-    <h2> test number 2 </h2>
-    
-  </body>
+  <script>
+    // Mock database
+    const users = [];
+
+    let currentUser = null;
+
+    function signUp() {
+      const username = document.getElementById('signupUsername').value.trim();
+      const password = document.getElementById('signupPassword').value.trim();
+      const role = document.getElementById('role').value;
+
+      if (!username || !password) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      if (users.some(u => u.username === username)) {
+        alert('Username already exists!');
+        return;
+      }
+
+      const newUser = { username, password, role, children: [] };
+      users.push(newUser);
+      alert(`Account created successfully as a ${role}!`);
+      console.log(users);
+    }
+
+    function login() {
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (!user) {
+        alert('Invalid username or password.');
+        return;
+      }
+
+      currentUser = user;
+      alert(`Logged in as ${user.username} (${user.role})`);
+
+      if (user.role === 'parent') {
+        document.getElementById('linkSection').style.display = 'block';
+        document.getElementById('currentParent').innerText = user.username;
+        renderLinkedChildren();
+      } else {
+        document.getElementById('linkSection').style.display = 'none';
+      }
+    }
+
+    function linkChild() {
+      const childUsername = document.getElementById('childToLink').value.trim();
+      if (!childUsername) {
+        alert('Please enter a child username.');
+        return;
+      }
+
+      const child = users.find(u => u.username === childUsername && u.role === 'child');
+      if (!child) {
+        alert('Child account not found.');
+        return;
+      }
+
+      if (currentUser.children.includes(childUsername)) {
+        alert('This child is already linked.');
+        return;
+      }
+
+      currentUser.children.push(childUsername);
+      alert(`Child ${childUsername} linked successfully!`);
+      renderLinkedChildren();
+    }
+
+    function renderLinkedChildren() {
+      const list = document.getElementById('linkedChildren');
+      list.innerHTML = '';
+      currentUser.children.forEach(child => {
+        const li = document.createElement('li');
+        li.textContent = child;
+        list.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
 </html>
